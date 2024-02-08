@@ -11,14 +11,12 @@ class ProfileScreen extends StatelessWidget {
       // showDialog(
       //   context: buildContext,
       //   builder: (BuildContext context) {
-      //     return AlertDialog(
-      //       title: const Text('Error'),
-      //       content: const Text('You are not connected'),
-      //       actions: <Widget>[
+      //     return ErrorPopup(
+      //       title: "Disconnected",
+      //       message: "message",
+      //       buttons: <TextButton>[
       //         TextButton(
-      //           onPressed: () {
-      //             Navigator.pop(context);
-      //           },
+      //           onPressed: () => print("message"),
       //           child: const Text('OK'),
       //         ),
       //       ],

@@ -2,6 +2,7 @@ import 'package:chat_app/core/constants/routes.dart';
 import 'package:chat_app/shared/logic/cubit/auth_cubit.dart';
 import 'package:chat_app/features/socket_io/logic/cubit/socket_io_cubit.dart';
 import 'package:chat_app/shared/logic/state/auth_state.dart';
+import 'package:chat_app/shared/services/dio_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,8 +16,9 @@ class SplashScreen extends StatelessWidget {
     if (!authState.connected) {
       Navigator.pushNamed(buildContext, Routes.login);
     } else {
+      DioHelper.setToken(authState.token!);
       BlocProvider.of<SocketIoCubit>(buildContext).connect(authState.token!);
-      Navigator.pushNamed(buildContext, Routes.profile);
+      Navigator.pushNamed(buildContext, Routes.home);
     }
   }
 

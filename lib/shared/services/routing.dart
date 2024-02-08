@@ -1,6 +1,7 @@
 import 'package:chat_app/core/constants/routes.dart';
 import 'package:chat_app/features/authentication/login_screen.dart';
 import 'package:chat_app/features/authentication/register_screen.dart';
+import 'package:chat_app/features/home/screens/home_screen.dart';
 import 'package:chat_app/features/profile/screens/profile_screen.dart';
 import 'package:chat_app/features/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => LoginScreen());
       case Routes.profile:
         return MaterialPageRoute(builder: (_) => ProfileScreen());
+      case Routes.home:
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
       default:
         return MaterialPageRoute(builder: (_) => SplashScreen());
     }

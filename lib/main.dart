@@ -3,7 +3,6 @@ import 'package:chat_app/shared/logic/cubit/auth_cubit.dart';
 import 'package:chat_app/shared/logic/cubit/internet_cubit.dart';
 import 'package:chat_app/features/socket_io/logic/cubit/socket_io_cubit.dart';
 import 'package:chat_app/shared/logic/state/auth_state.dart';
-import 'package:chat_app/features/socket_io/logic/state/socket_io_state.dart';
 import 'package:chat_app/shared/services/dio_helper.dart';
 import 'package:chat_app/shared/services/routing.dart';
 import 'package:chat_app/shared/widgets/error_popup.dart';
@@ -62,14 +61,25 @@ class _MyAppState extends State<MyApp> {
                   print("is connected: ${state.connected}");
                   if (!state.connected) {
                     showDialog(
-                      barrierDismissible: false,
+                      // barrierDismissible: false,
                       context: context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Disconnected'),
-                          content: const Text(
-                              'You got disconnected from your account, please login again.'),
-                          actions: <Widget>[
+                        // return AlertDialog(
+                        //   title: const Text('Disconnected'),
+                        //   content: const Text(
+                        //       'You got disconnected from your account, please login again.'),
+                        //   actions: <Widget>[
+                        //     TextButton(
+                        //       onPressed: () => print("Disconnected"),
+                        //       child: const Text('OK'),
+                        //     ),
+                        //   ],
+                        // );
+                        return ErrorPopup(
+                          title: "Disconnected",
+                          message:
+                              'You got disconnected from your account, please login again.',
+                          buttons: <TextButton>[
                             TextButton(
                               onPressed: () => print("Disconnected"),
                               child: const Text('OK'),
@@ -90,13 +100,23 @@ class _MyAppState extends State<MyApp> {
                             ? state.message
                             : "";
                     showDialog(
-                      barrierDismissible: false,
+                      // barrierDismissible: false,
                       context: context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Disconnected'),
-                          content: Text(message),
-                          actions: <Widget>[
+                        // return AlertDialog(
+                        //   title: const Text('Disconnected'),
+                        //   content: Text(message),
+                        //   actions: <Widget>[
+                        //     TextButton(
+                        //       onPressed: () => print(message),
+                        //       child: const Text('OK'),
+                        //     ),
+                        //   ],
+                        // );
+                        return ErrorPopup(
+                          title: "Disconnected",
+                          message: message,
+                          buttons: <TextButton>[
                             TextButton(
                               onPressed: () => print(message),
                               child: const Text('OK'),

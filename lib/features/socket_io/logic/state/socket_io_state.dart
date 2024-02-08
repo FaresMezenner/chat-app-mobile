@@ -1,3 +1,5 @@
+part of '../cubit/socket_io_cubit.dart';
+
 class SocketIoState {}
 
 class SocketIoInitial extends SocketIoState {}

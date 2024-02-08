@@ -1,6 +1,6 @@
-import 'package:chat_app/features/socket_io/logic/state/socket_io_state.dart';
 import 'package:chat_app/shared/services/socket_io_helper.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+part 'package:chat_app/features/socket_io/logic/state/socket_io_state.dart';
 
 class SocketIoCubit extends Cubit<SocketIoState> {
   late final SocketIoHelper _socketIoHelper;
