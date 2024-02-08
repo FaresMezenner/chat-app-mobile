@@ -46,68 +46,84 @@ class _MyAppState extends State<MyApp> {
           create: (context) => SocketIoCubit(),
         ),
       ],
-      child: Builder(builder: (context) {
-        return MultiBlocListener(
-          listeners: <BlocListener<dynamic, dynamic>>[
-            BlocListener<AuthCubit, AuthState>(
-              listener: (BuildContext context, AuthState state) {
-                if (!state.connected) {
-                  showDialog(
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (BuildContext context) {
-                      return ErrorPopup(
-                        title: "Disconnected",
-                        message:
-                            'You got disconnected from your account, please login again.',
-                        buttons: <TextButton>[
-                          TextButton(
-                            onPressed: () => print("Disconnected"),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-            ),
-            BlocListener<SocketIoCubit, SocketIoState>(
-              listener: (BuildContext context, SocketIoState state) {
-                if (state is SocketIoDisconnected) {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return ErrorPopup(
-                        title: "Disconnected",
-                        message: state.message,
-                        buttons: <TextButton>[
-                          TextButton(
-                            onPressed: () => print(state.message),
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-            ),
-          ],
-          child: MaterialApp(
-            onGenerateRoute: AppRouter.onGenerateRoute,
-            title: 'Chat app',
-            theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: primaryColor,
-                primary: primaryColor,
-                secondary: secondaryColor,
-              ),
-              useMaterial3: true,
-            ),
+      child: MaterialApp(
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: primaryColor,
+            primary: primaryColor,
+            secondary: secondaryColor,
           ),
-        );
-      }),
+        ),
+        home: Builder(builder: (context) {
+          return MultiBlocListener(
+            listeners: <BlocListener<dynamic, dynamic>>[
+              BlocListener<AuthCubit, AuthState>(
+                listener: (BuildContext context, AuthState state) {
+                  print("is connected: ${state.connected}");
+                  if (!state.connected) {
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Disconnected'),
+                          content: const Text(
+                              'You got disconnected from your account, please login again.'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => print("Disconnected"),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+              BlocListener<SocketIoCubit, SocketIoState>(
+                listener: (BuildContext context, SocketIoState state) {
+                  if (state is SocketIoDisconnected || state is SocketIoError) {
+                    String message = state is SocketIoDisconnected
+                        ? state.message
+                        : state is SocketIoError
+                            ? state.message
+                            : "";
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Disconnected'),
+                          content: Text(message),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => print(message),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ],
+            child: MaterialApp(
+              onGenerateRoute: AppRouter.onGenerateRoute,
+              title: 'Chat app',
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(
+                  seedColor: primaryColor,
+                  primary: primaryColor,
+                  secondary: secondaryColor,
+                ),
+                useMaterial3: true,
+              ),
+            ),
+          );
+        }),
+      ),
     );
   }
 }

@@ -11,4 +11,9 @@ class SocketIoDisconnected extends SocketIoState {
       {this.message = "Maybe server is down, please try again later."});
 }
 
-class SocketIoError extends SocketIoState {}
+class SocketIoError extends SocketIoState {
+  final String message;
+
+  SocketIoError(
+      {this.message = "Something went wrong, please try again later."});
+}
