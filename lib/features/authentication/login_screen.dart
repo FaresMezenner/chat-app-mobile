@@ -1,5 +1,9 @@
+import 'package:chat_app/core/constants/endpoints.dart';
 import 'package:chat_app/core/constants/routes.dart';
+import 'package:chat_app/shared/logic/cubit/auth_cubit.dart';
+import 'package:chat_app/shared/services/dio_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -7,10 +11,21 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void login() {
+  void login(BuildContext context) {
     final String phone = phoneController.text;
     final String password = passwordController.text;
-    print('Phone: $phone, Password: $password');
+
+    DioHelper.getData(path: Endpoints.auth, headers: {
+      'phone': phone,
+      'password': password,
+    }).then((response) {
+      if (response.statusCode == 200) {
+        BlocProvider.of<AuthCubit>(context).connect(response.data['token']);
+        Navigator.pushNamed(context, Routes.profile);
+      }
+    }).catchError((error) {
+      print(error);
+    });
   }
 
   @override
@@ -37,7 +52,7 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: login,
+                onPressed: () => login(context),
                 child: const Text('Login'),
               ),
               const SizedBox(height: 20),

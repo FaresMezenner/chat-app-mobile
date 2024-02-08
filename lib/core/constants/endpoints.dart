@@ -1,5 +1,6 @@
 class Endpoints {
   static const String baseUrl =
-      'https://04e2-105-99-231-55.ngrok-free.app/api/v1/';
+      'https://8395-197-204-225-250.ngrok-free.app/api/v1/';
+  static const socketIoUrl = 'https://8395-197-204-225-250.ngrok-free.app';
   static const String auth = 'auth/';
 }

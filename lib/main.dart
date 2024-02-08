@@ -1,8 +1,12 @@
-import 'package:chat_app/features/authentication/login_screen.dart';
+import 'package:chat_app/core/constants/theme/colors.dart';
 import 'package:chat_app/shared/logic/cubit/auth_cubit.dart';
 import 'package:chat_app/shared/logic/cubit/internet_cubit.dart';
+import 'package:chat_app/features/socket_io/logic/cubit/socket_io_cubit.dart';
+import 'package:chat_app/shared/logic/state/auth_state.dart';
+import 'package:chat_app/features/socket_io/logic/state/socket_io_state.dart';
 import 'package:chat_app/shared/services/dio_helper.dart';
 import 'package:chat_app/shared/services/routing.dart';
+import 'package:chat_app/shared/widgets/error_popup.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,18 +38,76 @@ class _MyAppState extends State<MyApp> {
           create: (context) => AuthCubit(),
         ),
         BlocProvider(
-          create: (context) => InternetCubit(connectivity: Connectivity()),
+          create: (context) => InternetCubit(
+            connectivity: Connectivity(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => SocketIoCubit(),
         ),
       ],
-      child: MaterialApp(
-        onGenerateRoute: AppRouter.onGenerateRoute,
-        title: 'Chat app',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: LoginScreen(),
-      ),
+      child: Builder(builder: (context) {
+        return MultiBlocListener(
+          listeners: <BlocListener<dynamic, dynamic>>[
+            BlocListener<AuthCubit, AuthState>(
+              listener: (BuildContext context, AuthState state) {
+                if (!state.connected) {
+                  showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ErrorPopup(
+                        title: "Disconnected",
+                        message:
+                            'You got disconnected from your account, please login again.',
+                        buttons: <TextButton>[
+                          TextButton(
+                            onPressed: () => print("Disconnected"),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+            BlocListener<SocketIoCubit, SocketIoState>(
+              listener: (BuildContext context, SocketIoState state) {
+                if (state is SocketIoDisconnected) {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ErrorPopup(
+                        title: "Disconnected",
+                        message: state.message,
+                        buttons: <TextButton>[
+                          TextButton(
+                            onPressed: () => print(state.message),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ],
+          child: MaterialApp(
+            onGenerateRoute: AppRouter.onGenerateRoute,
+            title: 'Chat app',
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: primaryColor,
+                primary: primaryColor,
+                secondary: secondaryColor,
+              ),
+              useMaterial3: true,
+            ),
+          ),
+        );
+      }),
     );
   }
 }

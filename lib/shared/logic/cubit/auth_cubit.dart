@@ -1,7 +1,7 @@
 import 'package:chat_app/shared/logic/state/auth_state.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-class AuthCubit extends Cubit<AuthState> with HydratedMixin {
+class AuthCubit extends HydratedCubit<AuthState> {
   AuthCubit() : super(const AuthState(connected: false));
 
   void connect(String token) {

@@ -1,7 +1,9 @@
 import 'package:chat_app/core/constants/endpoints.dart';
 import 'package:chat_app/core/constants/routes.dart';
+import 'package:chat_app/shared/logic/cubit/auth_cubit.dart';
 import 'package:chat_app/shared/services/dio_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RegisterScreen extends StatelessWidget {
   RegisterScreen({super.key});
@@ -10,7 +12,7 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void register() {
+  void register(BuildContext context) {
     final String name = nameController.text;
     final String phone = phoneController.text;
     final String password = passwordController.text;
@@ -20,7 +22,12 @@ class RegisterScreen extends StatelessWidget {
       'phone': phone,
       'password': password,
     }).then((response) {
-      print(response.data);
+      if (response.statusCode == 200) {
+        BlocProvider.of<AuthCubit>(context).connect(response.data['token']);
+        Navigator.pushNamed(context, Routes.profile);
+      }
+    }).catchError((error) {
+      print(error);
     });
   }
 
@@ -55,7 +62,7 @@ class RegisterScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: register,
+                onPressed: () => register(context),
                 child: const Text('Register'),
               ),
               const SizedBox(height: 20),
