@@ -1,4 +1,6 @@
+import 'package:chat_app/core/constants/enums/tables.dart';
 import 'package:chat_app/features/add_contact/logic/cubit/add_contact_cubit.dart';
+import 'package:chat_app/shared/services/sqlite_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -41,18 +43,13 @@ class AddContact extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     String phone = _phoneController.text;
-                    if (phone.isNotEmpty) {
-                      BlocProvider.of<AddContactCubit>(subContext)
-                          .addContact(phone);
-                    } else {
-                      BlocProvider.of<AddContactCubit>(subContext)
-                          .declareWrongInput();
-                    }
+                    BlocProvider.of<AddContactCubit>(subContext)
+                        .addContact(phone);
                   },
                   child: const Text('Add'),
                 ),
                 const SizedBox(height: 20),
-                BlocBuilder<AddContactCubit, AddContactState>(
+                BlocConsumer<AddContactCubit, AddContactState>(
                   builder: (context, state) {
                     if (state is AddContactLoading) {
                       return const CircularProgressIndicator();
@@ -67,6 +64,14 @@ class AddContact extends StatelessWidget {
                       return const SizedBox.shrink();
                     }
                   },
+                  listener: (context, state) async {
+                    List<Map<String, dynamic>> contacts =
+                        await SqliteHelper().getAll(Tables.contacts.getName());
+                    print(contacts);
+                    Navigator.of(context).pop();
+                  },
+                  listenWhen: (previous, current) =>
+                      current is AddContactSuccess,
                 ),
               ],
             ),

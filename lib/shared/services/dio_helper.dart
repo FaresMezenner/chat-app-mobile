@@ -3,10 +3,10 @@ import 'package:chat_app/core/constants/errors/backend_erro.dart';
 import 'package:dio/dio.dart';
 
 class DioHelper {
-  static late Dio dio;
+  static late Dio _dio;
 
   static init({String? token}) {
-    dio = Dio(
+    _dio = Dio(
       BaseOptions(
         baseUrl: Endpoints.baseUrl,
         connectTimeout: const Duration(minutes: 1),
@@ -25,7 +25,7 @@ class DioHelper {
   }
 
   static setToken(String token) {
-    dio.options.headers.addAll({
+    _dio.options.headers.addAll({
       "Authorization": token,
     });
   }
@@ -51,7 +51,7 @@ class DioHelper {
         "Authorization": token,
       });
     }
-    Response res = await dio.get(
+    Response res = await _dio.get(
       path,
       queryParameters: query,
       options: Options(
@@ -81,7 +81,7 @@ class DioHelper {
         "Authorization": token,
       });
     }
-    Response res = await dio.post(
+    Response res = await _dio.post(
       path,
       data: data,
       queryParameters: query,
