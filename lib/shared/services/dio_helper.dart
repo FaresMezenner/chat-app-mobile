@@ -8,7 +8,7 @@ class DioHelper {
   static init({String? token}) {
     _dio = Dio(
       BaseOptions(
-        baseUrl: Endpoints.baseUrl,
+        baseUrl: Endpoints.apiUrl,
         connectTimeout: const Duration(minutes: 1),
         receiveTimeout: const Duration(minutes: 1),
         receiveDataWhenStatusError: true,

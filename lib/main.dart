@@ -1,4 +1,5 @@
 import 'package:chat_app/core/constants/theme/colors.dart';
+import 'package:chat_app/features/home/logic/cubit/contacts_cubit.dart';
 import 'package:chat_app/shared/logic/cubit/auth_cubit.dart';
 import 'package:chat_app/shared/logic/cubit/internet_cubit.dart';
 import 'package:chat_app/features/socket_io/logic/cubit/socket_io_cubit.dart';
@@ -31,11 +32,13 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(
+          create: (context) => ContactsCubit(),
+        ),
         BlocProvider(
           create: (context) => AuthCubit(),
         ),
@@ -45,7 +48,9 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
         BlocProvider(
-          create: (context) => SocketIoCubit(),
+          create: (context) => SocketIoCubit(
+            contactsCubit: BlocProvider.of<ContactsCubit>(context),
+          ),
         ),
       ],
       child: MaterialApp(

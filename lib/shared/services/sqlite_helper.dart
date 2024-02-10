@@ -12,11 +12,21 @@ class SqliteHelper {
   Future<Database> getDatabase() async {
     if (_db == null) {
       final String path = join(await getDatabasesPath(), 'database.db');
+      // Uncomment the following lines to reset the database
+      // await deleteDatabase(path);
       _db = await openDatabase(path, onCreate: (db, version) async {
-        await db.execute('CREATE TABLE ${Tables.contacts.getName()}('
+        db.execute('CREATE TABLE ${Tables.contacts.getName()}('
             'id TEXT PRIMARY KEY, '
             'phone TEXT, '
+            'read INTEGER,'
             'name TEXT)');
+        db.execute(' CREATE TABLE ${Tables.messages.getName()} ('
+            'id INTEGER PRIMARY KEY AUTOINCREMENT, '
+            'message TEXT, '
+            'contact TEXT,'
+            'received INTEGER,'
+            'sentDate TEXT, '
+            'FOREIGN KEY (contact) REFERENCES ${Tables.contacts.getName()} (id))');
       }, version: 1);
     }
     return _db!;
@@ -75,5 +85,10 @@ class SqliteHelper {
       whereArgs: [value],
     );
     return maps;
+  }
+
+  Future<List<Map<String, dynamic>>> rawQuery(String query) async {
+    final Database db = await getDatabase();
+    return db.rawQuery(query);
   }
 }

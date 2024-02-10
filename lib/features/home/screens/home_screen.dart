@@ -1,5 +1,8 @@
-import 'package:chat_app/features/add_contact/widgets/add_contact_widget.dart';
+import 'package:chat_app/features/home/widgets/add_contact_widget.dart';
+import 'package:chat_app/features/home/bodies/contacts_body.dart';
+import 'package:chat_app/features/home/logic/cubit/contacts_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -19,9 +22,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Chat app'),
       ),
-      body: const Center(
-        child: Text('Home Screen'),
-      ),
+      body: const Contacts(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => addContactPressed(context),
         child: const Icon(Icons.add),

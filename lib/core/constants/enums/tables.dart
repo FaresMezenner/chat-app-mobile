@@ -1,5 +1,6 @@
 enum Tables {
-  contacts;
+  contacts,
+  messages;
 
   String getName() => toString().split('.').last;
 }
